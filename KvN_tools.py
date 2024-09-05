@@ -7,7 +7,6 @@ import scipy.linalg as la
 import scipy.sparse as sparse
 from scipy.integrate import solve_ivp
 from tqdm import tqdm
-import pandas as pd
 
 plt.style.use('ggplot')
 
