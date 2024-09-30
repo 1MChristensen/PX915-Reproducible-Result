@@ -396,6 +396,8 @@ def plot_initial_evolution_mode(x, psi_store, t, save=True, plot_analytical=Fals
     #  plt.savefig(f'plots/{filename}.pdf')
     #plt.show()
 
+    return x[max_indices]
+
 # Plot std, evolution and mode on a subplots
 def plot_std_evolution_mode(x, psi_store, t, save=True, plot_analytical=False, params=(-1,0,0), x0=1, filename='test'):
      # Plot the time evolution
@@ -575,3 +577,27 @@ def plot_sigma(x, psi_store, t, sig_num):
     plt.savefig('plots/test.pdf')
     plt.show()
 
+# Numerical solution
+def numerical_solution(t, x0, params):
+    sol = solve_ivp(numerical, (t[0], t[-1]), y0=[x0], t_eval=t, args=params)
+    return sol.t, sol.y.T
+
+# KvN stable time
+def stable_time(t, x_kvn, x_num, epsilon):
+    # Get the times where the KvN solution is within epsilon of the numerical solution
+    t_correct = t[np.where(np.abs(x_kvn - x_num[:,0]) < epsilon)]
+
+    # Get the first discontinuity
+    dt = t[1] - t[0]
+    differences = np.diff(t_correct)
+    discontinuity_indices = np.where(np.abs(differences - dt) > 1e-6)[0]
+
+    if len(discontinuity_indices) > 0:
+        max_t_index = discontinuity_indices[0]
+        max_t = t_correct[max_t_index]
+    else:
+        max_t = t[-1]
+
+    return max_t
+ 
+    
